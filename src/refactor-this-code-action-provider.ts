@@ -20,22 +20,22 @@ export class RefactorThisCodeActionProvider implements CodeActionProvider {
     context: CodeActionContext,
     token: CancellationToken
   ): ProviderResult<(Command | CodeAction)[]> {
-    var selection = new Selection(range.start, range.end);
-    var validCommands = this.refactorCommands
-      .filter(command => !context.only || context.only.contains(command.kind))
-      .filter(command => command.canBePerformed(document, selection))
-      .map(command => {
-        var action = new CodeAction(command.title, command.kind);
-        action.command = {
-          command: command.name,
-          title: command.title,
-          tooltip: command.tooltip
-        };
-        return action;
-      });
-
     var result = new Promise<CodeAction[]>((resolve, reject) => {
       token.onCancellationRequested(() => reject());
+      var selection = new Selection(range.start, range.end);
+      var validCommands = this.refactorCommands
+        .filter(command => !context.only || context.only.contains(command.kind))
+        .filter(command => command.canBePerformed(document, selection))
+        .map(command => {
+          var action = new CodeAction(command.title, command.kind);
+          action.command = {
+            command: command.name,
+            title: command.title,
+            tooltip: command.tooltip
+          };
+          return action;
+        });
+
       resolve(validCommands);
     });
     return result;
