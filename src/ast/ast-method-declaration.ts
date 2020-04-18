@@ -1,4 +1,9 @@
-import { isMethodDeclaration, Node, SourceFile } from 'typescript';
+import {
+  isMethodDeclaration,
+  MethodDeclaration,
+  Node,
+  SourceFile
+} from 'typescript';
 import { Selection } from 'vscode';
 import { ASTNode } from './abstractions/ast-node';
 
@@ -6,13 +11,13 @@ export class ASTMethodDeclaration implements ASTNode {
   constructor(private astNode: ASTNode, private selection: Selection) {}
   sourceFile: SourceFile = this.astNode.sourceFile;
 
-  getNode(): Node {
+  getNode(): MethodDeclaration {
     const match = this.findMethodDeclarationAtSelection(
       this.astNode.getNode(),
       this.selection,
       this.sourceFile
     );
-    return match;
+    return match as MethodDeclaration;
   }
 
   private findMethodDeclarationAtSelection = (
