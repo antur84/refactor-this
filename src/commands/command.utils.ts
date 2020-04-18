@@ -3,7 +3,7 @@ export async function tryExecute(command: () => Promise<any>): Promise<void> {
   try {
     await command();
   } catch (err) {
-    if (err.name === "Canceled") {
+    if (err.name === 'Canceled') {
       return;
     }
 

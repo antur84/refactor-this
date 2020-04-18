@@ -7,6 +7,7 @@
     "types": ["glob", "mocha", "node", "vscode"],
     "sourceMap": true,
     "rootDir": "src",
+    "allowSyntheticDefaultImports": true,
     "strict": false /* enable all strict type-checking options */
     /* Additional Checks */
     // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

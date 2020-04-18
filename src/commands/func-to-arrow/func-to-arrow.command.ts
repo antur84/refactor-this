@@ -1,46 +1,34 @@
-import * as ts from 'typescript';
-import * as vscode from 'vscode';
+import { isMethodDeclaration, Node, SourceFile } from 'typescript';
+import { CodeActionKind, Selection, TextDocument, window } from 'vscode';
+import { ASTParser } from '../../ast/ast';
 import { tryExecute } from '../command.utils';
 import { RefactorCommand } from './abstractions/refactor.command';
 
 async function funcToArrow() {
-  const activeTextEditor = vscode.window.activeTextEditor;
+  const activeTextEditor = window.activeTextEditor;
   if (!activeTextEditor) {
     return;
   }
-
   const { document, selection } = activeTextEditor;
-  var sourceFile = ts.createSourceFile(
-    document.fileName,
-    document.getText(),
-    ts.ScriptTarget.Latest
+  var parser = new ASTParser(document);
+  const node = parser.getNode(src =>
+    findMethodDeclaration(src, selection, src)
   );
-
-  const node = findNodeFromSelection(sourceFile, selection, sourceFile);
   if (!node) {
     return;
   }
-
-  vscode.window.showInformationMessage('do magic!', { modal: false });
+  window.showInformationMessage('do magic!', { modal: false });
 }
 
-async function canBePerformed(
-  document: vscode.TextDocument,
-  selection: vscode.Selection
-) {
-  var sourceFile = ts.createSourceFile(
-    document.fileName,
-    document.getText(),
-    ts.ScriptTarget.Latest
-  );
-  const validNode = findNodeFromSelection(sourceFile, selection, sourceFile);
-  return !!validNode;
+async function canBePerformed(document: TextDocument, selection: Selection) {
+  var parser = new ASTParser(document);
+  return !!parser.getNode(src => findMethodDeclaration(src, selection, src));
 }
 
 const funcToArrowCommand: RefactorCommand = {
   name: `refactorthis.func-to-arrow`,
   title: `RThis: Convert to arrow function (=>)`,
-  kind: vscode.CodeActionKind.RefactorRewrite,
+  kind: CodeActionKind.RefactorRewrite,
   command: async () => {
     await tryExecute(() => funcToArrow());
   },
@@ -49,12 +37,12 @@ const funcToArrowCommand: RefactorCommand = {
 
 export { funcToArrowCommand };
 
-function findNodeFromSelection(
-  node: ts.Node,
-  selection: vscode.Selection,
-  sourceFile: ts.SourceFile
-): ts.Node {
-  if (ts.isMethodDeclaration(node)) {
+function findMethodDeclaration(
+  node: Node,
+  selection: Selection,
+  sourceFile: SourceFile
+): Node {
+  if (isMethodDeclaration(node)) {
     var startOfMethodName = sourceFile.getLineAndCharacterOfPosition(
       node.name.getStart(sourceFile)
     );
@@ -72,10 +60,10 @@ function findNodeFromSelection(
   }
 
   const children = node.getChildren(sourceFile) || [];
-  let match: ts.Node = null;
+  let match: Node = null;
   for (let index = 0; index < children.length; index++) {
     const child = children[index];
-    match = findNodeFromSelection(child, selection, sourceFile);
+    match = findMethodDeclaration(child, selection, sourceFile);
     if (match) {
       break;
     }
