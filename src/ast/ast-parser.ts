@@ -1,5 +1,6 @@
-import { createSourceFile, Node, ScriptTarget, SourceFile } from 'typescript';
+import { createSourceFile, ScriptTarget } from 'typescript';
 import { TextDocument } from 'vscode';
+import { NodeLocatorFunc } from './locators/abstractions/node-locator';
 
 export class ASTParser {
   constructor(private document: TextDocument) {}
@@ -12,8 +13,8 @@ export class ASTParser {
     return sourceFile;
   }
 
-  getNode(nodeFinder: (sourceFile: SourceFile) => Node) {
+  getNode(nodeLocator: NodeLocatorFunc) {
     var sourceFile = this.getSourceFile();
-    return nodeFinder(sourceFile);
+    return nodeLocator(sourceFile);
   }
 }
