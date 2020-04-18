@@ -23,13 +23,28 @@ async function funcToArrow() {
 
   vscode.window.showInformationMessage('do magic!', { modal: false });
 }
+
+async function canBePerformed(
+  document: vscode.TextDocument,
+  selection: vscode.Selection
+) {
+  var sourceFile = ts.createSourceFile(
+    document.fileName,
+    document.getText(),
+    ts.ScriptTarget.Latest
+  );
+  const validNode = findNodeFromSelection(sourceFile, selection, sourceFile);
+  return !!validNode;
+}
+
 const funcToArrowCommand: RefactorCommand = {
   name: `refactorthis.func-to-arrow`,
   title: `RThis: Convert to arrow function (=>)`,
   kind: vscode.CodeActionKind.RefactorRewrite,
   command: async () => {
     await tryExecute(() => funcToArrow());
-  }
+  },
+  canBePerformed: canBePerformed
 };
 
 export { funcToArrowCommand };
