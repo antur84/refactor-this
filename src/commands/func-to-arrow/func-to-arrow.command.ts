@@ -5,6 +5,7 @@ import {
   createToken,
   EmitHint,
   Node,
+  PropertyDeclaration,
   SyntaxKind,
   transform,
   TransformationContext,
@@ -18,7 +19,9 @@ import {
   Range,
   Selection,
   TextDocument,
+  TextEdit,
   window,
+  workspace,
   WorkspaceEdit
 } from 'vscode';
 import { ASTMethodDeclaration } from '../../ast/ast-method-declaration';
@@ -38,73 +41,58 @@ async function funcToArrow() {
     return;
   }
 
-  var transformerFactory: TransformerFactory<Node> = (
+  let propertyArrowFunction: PropertyDeclaration = createProperty(
+    undefined,
+    nodeToRefactor.modifiers,
+    nodeToRefactor.name,
+    undefined,
+    nodeToRefactor.type,
+    createArrowFunction(
+      nodeToRefactor.modifiers,
+      nodeToRefactor.typeParameters,
+      nodeToRefactor.parameters,
+      nodeToRefactor.type,
+      createToken(SyntaxKind.EqualsGreaterThanToken),
+      nodeToRefactor.body
+    )
+  );
+  var replaceNodeWithArrowFunction: TransformerFactory<Node> = (
     context: TransformationContext
   ) => {
-    return rootNode => {
-      function visit(node: Node): Node {
+    function visit(node: Node): Node {
+      if (node === nodeToRefactor) {
+        return propertyArrowFunction;
+      } else {
         node = visitEachChild(node, visit, context);
-
-        if (node === nodeToRefactor) {
-          const arrowFunc = createArrowFunction(
-            nodeToRefactor.modifiers,
-            nodeToRefactor.typeParameters,
-            nodeToRefactor.parameters,
-            nodeToRefactor.type,
-            createToken(SyntaxKind.EqualsGreaterThanToken),
-            nodeToRefactor.body
-          );
-          return createProperty(
-            undefined,
-            nodeToRefactor.modifiers,
-            nodeToRefactor.name,
-            undefined,
-            nodeToRefactor.type,
-            arrowFunc
-          );
-        } else {
-          return node;
-        }
+        return node;
       }
+    }
 
-      return visitNode(rootNode, visit);
-    };
+    return startNode => visitNode(startNode, visit);
   };
-  const edit = new WorkspaceEdit();
 
-  var transformed = transform(parser.sourceFile, [transformerFactory]);
+  var transformed = transform(parser.sourceFile, [
+    replaceNodeWithArrowFunction
+  ]);
+
+  const transformedFileContent = createPrinter().printNode(
+    EmitHint.Unspecified,
+    propertyArrowFunction,
+    transformed.transformed[0].getSourceFile()
+  );
+  const edit = new WorkspaceEdit();
   var startOfMethodName = parser.sourceFile.getLineAndCharacterOfPosition(
     nodeToRefactor.getStart(parser.sourceFile)
   );
   var endOfMethodName = parser.sourceFile.getLineAndCharacterOfPosition(
     nodeToRefactor.getEnd()
   );
-  const replaceRange = new Range(
+  const replaceExact = new Range(
     new Position(startOfMethodName.line, startOfMethodName.character),
     new Position(endOfMethodName.line, endOfMethodName.character)
   );
-
-  console.log(
-    createPrinter().printNode(
-      EmitHint.Unspecified,
-      parser.sourceFile,
-      undefined
-    )
-  );
-
-  console.log(
-    createPrinter().printNode(
-      EmitHint.Unspecified,
-      transformed.transformed[0],
-      undefined
-    )
-  );
-
-  // edit.set(document.uri, [
-  //   new TextEdit(replaceRange, transformed.transformed[0].getText())
-  // ]);
-
-  // await workspace.applyEdit(edit);
+  edit.set(document.uri, [new TextEdit(replaceExact, transformedFileContent)]);
+  await workspace.applyEdit(edit);
 }
 
 function canBePerformed(document: TextDocument, selection: Selection) {
