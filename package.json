@@ -11,14 +11,14 @@
   ],
   "activationEvents": [
     "onLanguage:typescript",
-    "onCommand:refactorthis.func-to-arrow"
+    "onCommand:refactorthis.to-arrow-syntax"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "refactorthis.func-to-arrow",
-        "title": "RThis: Convert to arrow function (=>)"
+        "command": "refactorthis.to-arrow-syntax",
+        "title": "[RThis] Convert to arrow syntax (=>)"
       }
     ]
   },
