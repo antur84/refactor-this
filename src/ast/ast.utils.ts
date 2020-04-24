@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 import * as vscode from 'vscode';
 export const findAtSelection = <T extends ts.FunctionLikeDeclarationBase>(
   node: ts.Node,

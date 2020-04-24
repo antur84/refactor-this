@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 import * as vscode from 'vscode';
 import { ASTNode } from '../abstractions/ast-node';
 import { findFunctionDeclarationAtSelection } from '../ast.utils';

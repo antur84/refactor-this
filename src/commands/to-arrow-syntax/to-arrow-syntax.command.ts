@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 import * as vscode from 'vscode';
 import { ASTFunctionDeclaration } from '../../ast/nodes/ast-function-declaration';
 import { ASTMethodDeclaration } from '../../ast/nodes/ast-method-declaration';
