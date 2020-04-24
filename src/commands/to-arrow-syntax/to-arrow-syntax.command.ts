@@ -1,11 +1,18 @@
 import {
   createArrowFunction,
+  createModifiersFromModifierFlags,
   createPrinter,
   createProperty,
   createToken,
   EmitHint,
+  FunctionDeclaration,
+  isMethodDeclaration,
+  MethodDeclaration,
+  Modifier,
+  ModifierFlags,
   Node,
   PropertyDeclaration,
+  SourceFile,
   SyntaxKind,
   transform,
   TransformationContext,
@@ -24,31 +31,29 @@ import {
   workspace,
   WorkspaceEdit
 } from 'vscode';
+import { ASTFunctionDeclaration } from '../../ast/ast-function-declaration';
 import { ASTMethodDeclaration } from '../../ast/ast-method-declaration';
 import { ASTRoot } from '../../ast/ast-root';
 import { tryExecute } from '../command.utils';
 import { RefactorCommand } from './abstractions/refactor.command';
-
-async function funcToArrow() {
+async function toArrowSyntax() {
   const activeTextEditor = window.activeTextEditor;
   if (!activeTextEditor) {
     return;
   }
   const { document, selection } = activeTextEditor;
-  var parser = new ASTMethodDeclaration(new ASTRoot(document), selection);
-  const nodeToRefactor = parser.getNode();
-  if (!nodeToRefactor) {
-    return;
-  }
-
+  const { source, node: nodeToRefactor } = getSourceAndNodeAtSelection(
+    document,
+    selection
+  );
   let propertyArrowFunction: PropertyDeclaration = createProperty(
     undefined,
-    nodeToRefactor.modifiers,
+    createModifierFromNode(nodeToRefactor),
     nodeToRefactor.name,
     undefined,
     nodeToRefactor.type,
     createArrowFunction(
-      nodeToRefactor.modifiers,
+      undefined,
       nodeToRefactor.typeParameters,
       nodeToRefactor.parameters,
       nodeToRefactor.type,
@@ -56,7 +61,7 @@ async function funcToArrow() {
       nodeToRefactor.body
     )
   );
-  var replaceNodeWithArrowFunction: TransformerFactory<Node> = (
+  var replaceNodeWithArrowSyntax: TransformerFactory<Node> = (
     context: TransformationContext
   ) => {
     function visit(node: Node): Node {
@@ -71,9 +76,7 @@ async function funcToArrow() {
     return startNode => visitNode(startNode, visit);
   };
 
-  var transformed = transform(parser.sourceFile, [
-    replaceNodeWithArrowFunction
-  ]);
+  var transformed = transform(source, [replaceNodeWithArrowSyntax]);
 
   const transformedFileContent = createPrinter().printNode(
     EmitHint.Unspecified,
@@ -81,10 +84,10 @@ async function funcToArrow() {
     transformed.transformed[0].getSourceFile()
   );
   const edit = new WorkspaceEdit();
-  var startOfMethodName = parser.sourceFile.getLineAndCharacterOfPosition(
-    nodeToRefactor.getStart(parser.sourceFile)
+  var startOfMethodName = source.getLineAndCharacterOfPosition(
+    nodeToRefactor.getStart(source)
   );
-  var endOfMethodName = parser.sourceFile.getLineAndCharacterOfPosition(
+  var endOfMethodName = source.getLineAndCharacterOfPosition(
     nodeToRefactor.getEnd()
   );
   const replaceExact = new Range(
@@ -95,20 +98,45 @@ async function funcToArrow() {
   await workspace.applyEdit(edit);
 }
 
-function canBePerformed(document: TextDocument, selection: Selection) {
-  var parser = new ASTMethodDeclaration(new ASTRoot(document), selection);
-  var node = parser.getNode();
-  return !!node;
+function createModifierFromNode(
+  node: MethodDeclaration | FunctionDeclaration
+): Modifier[] {
+  if (isMethodDeclaration(node)) {
+    return node.modifiers ? [...node.modifiers] : [];
+  }
+
+  return createModifiersFromModifierFlags(ModifierFlags.Const);
 }
 
-const funcToArrowCommand: RefactorCommand = {
-  name: `refactorthis.func-to-arrow`,
-  title: `RThis: Convert to arrow function (=>)`,
+function canBePerformed(document: TextDocument, selection: Selection) {
+  return !!getSourceAndNodeAtSelection(document, selection).node;
+}
+
+function getSourceAndNodeAtSelection(
+  document: TextDocument,
+  selection: Selection
+): { source: SourceFile; node?: MethodDeclaration | FunctionDeclaration } {
+  var root = new ASTRoot(document);
+  var methodDeclarationParser = new ASTMethodDeclaration(root, selection);
+  let node:
+    | MethodDeclaration
+    | FunctionDeclaration = methodDeclarationParser.getNode();
+  if (!node) {
+    var functionDeclarationParser = new ASTFunctionDeclaration(root, selection);
+    node = functionDeclarationParser.getNode();
+  }
+
+  return { source: root.sourceFile, node };
+}
+
+const toArrowSyntaxCommand: RefactorCommand = {
+  name: `refactorthis.to-arrow-syntax`,
+  title: `[RThis] Convert to arrow syntax (=>)`,
   kind: CodeActionKind.RefactorRewrite,
   command: async () => {
-    await tryExecute(() => funcToArrow());
+    await tryExecute(() => toArrowSyntax());
   },
   canBePerformed: canBePerformed
 };
 
-export { funcToArrowCommand };
+export { toArrowSyntaxCommand };

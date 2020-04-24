@@ -1,18 +1,18 @@
-import * as vscode from "vscode";
-import { funcToArrowCommand } from "./commands/func-to-arrow/func-to-arrow.command";
-import { RefactorThisCodeActionProvider } from "./refactor-this-code-action-provider";
+import * as vscode from 'vscode';
+import { toArrowSyntaxCommand } from './commands/to-arrow-syntax/to-arrow-syntax.command';
+import { RefactorThisCodeActionProvider } from './refactor-this-code-action-provider';
 
 export function activate(context: vscode.ExtensionContext) {
-  [funcToArrowCommand].forEach(command => {
+  [toArrowSyntaxCommand].forEach(command => {
     context.subscriptions.push(
       vscode.commands.registerCommand(command.name, command.command)
     );
   });
 
-  [funcToArrowCommand].forEach(command => {
+  [toArrowSyntaxCommand].forEach(command => {
     context.subscriptions.push(
       vscode.languages.registerCodeActionsProvider(
-        "typescript",
+        'typescript',
         new RefactorThisCodeActionProvider([command])
       )
     );
