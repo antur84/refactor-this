@@ -25,6 +25,7 @@ const config = {
     extensions: ['.ts', '.js']
   },
   module: {
+    noParse: /typescript/,
     rules: [
       {
         test: /\.ts$/,
