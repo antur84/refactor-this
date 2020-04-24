@@ -46,6 +46,9 @@ async function toArrowSyntax() {
     document,
     selection
   );
+  if (!nodeToRefactor) {
+    return;
+  }
   let propertyArrowFunction: PropertyDeclaration = createProperty(
     undefined,
     createModifierFromNode(nodeToRefactor),
@@ -108,10 +111,6 @@ function createModifierFromNode(
   return createModifiersFromModifierFlags(ModifierFlags.Const);
 }
 
-function canBePerformed(document: TextDocument, selection: Selection) {
-  return !!getSourceAndNodeAtSelection(document, selection).node;
-}
-
 function getSourceAndNodeAtSelection(
   document: TextDocument,
   selection: Selection
@@ -136,7 +135,8 @@ const toArrowSyntaxCommand: RefactorCommand = {
   command: async () => {
     await tryExecute(toArrowSyntaxCommand, () => toArrowSyntax());
   },
-  canBePerformed: canBePerformed
+  canBePerformed: (document: TextDocument, selection: Selection) =>
+    !!getSourceAndNodeAtSelection(document, selection).node
 };
 
 export { toArrowSyntaxCommand };
