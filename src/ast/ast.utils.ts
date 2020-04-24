@@ -1,17 +1,10 @@
-import {
-  FunctionLikeDeclarationBase,
-  isFunctionDeclaration,
-  isMethodDeclaration,
-  Node,
-  SourceFile
-} from 'typescript';
-import { Selection } from 'vscode';
-
-export const findAtSelection = <T extends FunctionLikeDeclarationBase>(
-  node: Node,
-  selection: Selection,
-  sourceFile: SourceFile,
-  matcher: (node: Node) => node is T
+import ts from 'typescript';
+import * as vscode from 'vscode';
+export const findAtSelection = <T extends ts.FunctionLikeDeclarationBase>(
+  node: ts.Node,
+  selection: vscode.Selection,
+  sourceFile: ts.SourceFile,
+  matcher: (node: ts.Node) => node is T
 ): T => {
   if (matcher(node)) {
     var startOfMethodName = sourceFile.getLineAndCharacterOfPosition(
@@ -43,13 +36,13 @@ export const findAtSelection = <T extends FunctionLikeDeclarationBase>(
 };
 
 export const findMethodDeclarationAtSelection = (
-  node: Node,
-  selection: Selection,
-  sourceFile: SourceFile
-) => findAtSelection(node, selection, sourceFile, isMethodDeclaration);
+  node: ts.Node,
+  selection: vscode.Selection,
+  sourceFile: ts.SourceFile
+) => findAtSelection(node, selection, sourceFile, ts.isMethodDeclaration);
 
 export const findFunctionDeclarationAtSelection = (
-  node: Node,
-  selection: Selection,
-  sourceFile: SourceFile
-) => findAtSelection(node, selection, sourceFile, isFunctionDeclaration);
+  node: ts.Node,
+  selection: vscode.Selection,
+  sourceFile: ts.SourceFile
+) => findAtSelection(node, selection, sourceFile, ts.isFunctionDeclaration);

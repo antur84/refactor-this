@@ -1,11 +1,11 @@
-import { createSourceFile, Node, ScriptTarget, SourceFile } from 'typescript';
-import { TextDocument } from 'vscode';
+import ts from 'typescript';
+import * as vscode from 'vscode';
 import { ASTNode } from '../abstractions/ast-node';
 
-export class ASTRoot implements ASTNode<Node> {
-  constructor(private document: TextDocument) {}
+export class ASTRoot implements ASTNode<ts.Node> {
+  constructor(private document: vscode.TextDocument) {}
 
-  private _sourceFile: SourceFile;
+  private _sourceFile: ts.SourceFile;
 
   get sourceFile() {
     if (!this._sourceFile) {
@@ -15,15 +15,15 @@ export class ASTRoot implements ASTNode<Node> {
   }
 
   private getSourceFile() {
-    var sourceFile = createSourceFile(
+    var sourceFile = ts.createSourceFile(
       this.document.fileName,
       this.document.getText(),
-      ScriptTarget.Latest
+      ts.ScriptTarget.Latest
     );
     return sourceFile;
   }
 
-  getNode(): Node {
+  getNode(): ts.Node {
     return this.sourceFile;
   }
 }

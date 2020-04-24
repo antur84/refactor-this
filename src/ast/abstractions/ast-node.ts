@@ -1,5 +1,5 @@
-import { Node } from 'typescript';
+import ts from 'typescript';
 
-export interface ASTNode<T extends Node> {
+export interface ASTNode<T extends ts.Node> {
   getNode(): T;
 }
