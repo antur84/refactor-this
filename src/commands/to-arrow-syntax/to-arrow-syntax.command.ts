@@ -31,9 +31,9 @@ import {
   workspace,
   WorkspaceEdit
 } from 'vscode';
-import { ASTFunctionDeclaration } from '../../ast/ast-function-declaration';
-import { ASTMethodDeclaration } from '../../ast/ast-method-declaration';
-import { ASTRoot } from '../../ast/ast-root';
+import { ASTFunctionDeclaration } from '../../ast/nodes/ast-function-declaration';
+import { ASTMethodDeclaration } from '../../ast/nodes/ast-method-declaration';
+import { ASTRoot } from '../../ast/nodes/ast-root';
 import { RefactorCommand } from '../abstractions/refactor.command';
 import { tryExecute } from '../command.utils';
 async function toArrowSyntax() {
@@ -116,13 +116,13 @@ function getSourceAndNodeAtSelection(
   selection: Selection
 ): { source: SourceFile; node?: MethodDeclaration | FunctionDeclaration } {
   var root = new ASTRoot(document);
-  var methodDeclarationParser = new ASTMethodDeclaration(root, selection);
+  var methodDeclaration = new ASTMethodDeclaration(root, selection);
   let node:
     | MethodDeclaration
-    | FunctionDeclaration = methodDeclarationParser.getNode();
+    | FunctionDeclaration = methodDeclaration.getNode();
   if (!node) {
-    var functionDeclarationParser = new ASTFunctionDeclaration(root, selection);
-    node = functionDeclarationParser.getNode();
+    var functionDeclaration = new ASTFunctionDeclaration(root, selection);
+    node = functionDeclaration.getNode();
   }
 
   return { source: root.sourceFile, node };

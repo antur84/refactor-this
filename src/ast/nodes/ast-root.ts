@@ -1,6 +1,6 @@
 import { createSourceFile, Node, ScriptTarget, SourceFile } from 'typescript';
 import { TextDocument } from 'vscode';
-import { ASTNode } from './abstractions/ast-node';
+import { ASTNode } from '../abstractions/ast-node';
 
 export class ASTRoot implements ASTNode<Node> {
   constructor(private document: TextDocument) {}
