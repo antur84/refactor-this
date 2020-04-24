@@ -9,13 +9,13 @@ import { ASTNode } from './abstractions/ast-node';
 
 export class ASTFunctionDeclaration implements ASTNode {
   constructor(private astNode: ASTNode, private selection: Selection) {}
-  sourceFile: SourceFile = this.astNode.sourceFile;
 
   getNode(): FunctionDeclaration {
+    const node = this.astNode.getNode();
     const match = this.findFunctionDeclarationAtSelection(
-      this.astNode.getNode(),
+      node,
       this.selection,
-      this.sourceFile
+      node.getSourceFile()
     );
     return match as FunctionDeclaration;
   }

@@ -1,6 +1,5 @@
-import { Node, SourceFile } from 'typescript';
+import { Node } from 'typescript';
 
 export interface ASTNode {
-  sourceFile: SourceFile;
   getNode(): Node;
 }
