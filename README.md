@@ -4,6 +4,9 @@ A vscode extension for TypeScript files that offers refactoring options that I f
 
 ## Features
 
+A number of refactoring options will be offered via the vscode quick fix lightbulb feature, and available as commands if you wish to keybind stuff.
+See below for a complete listing, expand each one for demo.
+
 <details>
   <summary>Convert to arrow syntax (=>)</summary>
 
