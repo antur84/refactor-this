@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { logToOutput } from '../logger';
 import { RefactorCommand } from './abstractions/refactor.command';
 export async function tryExecute(
   command: RefactorCommand,
@@ -11,7 +12,9 @@ export async function tryExecute(
       return;
     }
 
-    vscode.window.showErrorMessage(`Error performing '${command.title}.`);
-    console.error(err);
+    const message = `Error performing '${command.title}.`;
+    vscode.window.showErrorMessage(message);
+    logToOutput(message);
+    logToOutput(err);
   }
 }
