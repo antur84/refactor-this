@@ -4,7 +4,7 @@
     "target": "es6",
     "outDir": "out",
     "lib": ["es6"],
-    "types": ["glob", "mocha", "node", "vscode"],
+    "types": ["glob", "mocha", "node", "vscode", "chai"],
     "sourceMap": true,
     "rootDir": "src",
     "allowSyntheticDefaultImports": true,

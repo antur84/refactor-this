@@ -33,10 +33,12 @@
     "singleQuote": true
   },
   "devDependencies": {
+    "@types/chai": "^4.2.11",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.41.0",
+    "chai": "^4.2.0",
     "glob": "^7.1.5",
     "mocha": "^7.1.1",
     "prettier": "^1.19.1",
