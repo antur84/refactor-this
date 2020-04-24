@@ -34,8 +34,8 @@ import {
 import { ASTFunctionDeclaration } from '../../ast/ast-function-declaration';
 import { ASTMethodDeclaration } from '../../ast/ast-method-declaration';
 import { ASTRoot } from '../../ast/ast-root';
+import { RefactorCommand } from '../abstractions/refactor.command';
 import { tryExecute } from '../command.utils';
-import { RefactorCommand } from './abstractions/refactor.command';
 async function toArrowSyntax() {
   const activeTextEditor = window.activeTextEditor;
   if (!activeTextEditor) {
@@ -134,7 +134,7 @@ const toArrowSyntaxCommand: RefactorCommand = {
   title: `[RThis] Convert to arrow syntax (=>)`,
   kind: CodeActionKind.RefactorRewrite,
   command: async () => {
-    await tryExecute(() => toArrowSyntax());
+    await tryExecute(toArrowSyntaxCommand, () => toArrowSyntax());
   },
   canBePerformed: canBePerformed
 };

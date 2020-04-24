@@ -9,7 +9,7 @@ import {
   Selection,
   TextDocument
 } from 'vscode';
-import { RefactorCommand } from './commands/to-arrow-syntax/abstractions/refactor.command';
+import { RefactorCommand } from './commands/abstractions/refactor.command';
 
 export class RefactorThisCodeActionProvider implements CodeActionProvider {
   constructor(private refactorCommands: RefactorCommand[] = []) {}
