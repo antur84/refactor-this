@@ -1,23 +1,60 @@
-import * as path from 'path';
+import { expect } from 'chai';
 import * as vscode from 'vscode';
 import { toArrowSyntaxCommand } from '../../../../commands/to-arrow-syntax/to-arrow-syntax.command';
-import { sleep } from '../../../utils/sleep';
+import { createEditorForContent } from '../../../utils/content-creator';
 describe('to-arrow-syntax Test Suite', () => {
-  it('should convert function declarations', async () => {
-    const { editor } = await loadEditor();
-    editor.selection = new vscode.Selection(15, 20, 15, 21);
-    vscode.commands.executeCommand(toArrowSyntaxCommand.name);
-    return sleep(60000);
+  it('should handle function declaration', async () => {
+    const { editor, document } = await createEditorForContent(
+      `function funcDeclaration() {
+        var test = new FuncToArrowExample();
+        test.simpleMethod();
+      }`
+    );
+    editor.selection = new vscode.Selection(0, 10, 0, 10);
+
+    expect(document.getText()).contain(`function funcDeclaration() {`);
+
+    vscode.commands.executeCommand(toArrowSyntaxCommand.name).then(() => {
+      expect(document.getText()).contain(`const funcDeclaration = () => {`);
+    });
+  });
+
+  it('should handle method declaration', async () => {
+    const { editor, document } = await createEditorForContent(
+      `class Test {
+        methodDeclaration() {
+          var test = new FuncToArrowExample();
+          test.simpleMethod();
+        }
+      }`
+    );
+    editor.selection = new vscode.Selection(1, 10, 1, 10);
+
+    expect(document.getText()).contain(`methodDeclaration() {`);
+
+    vscode.commands.executeCommand(toArrowSyntaxCommand.name).then(() => {
+      expect(document.getText()).contain(`methodDeclaration = () => {`);
+    });
+  });
+
+  it('should handle advanced method declaration with modifier', async () => {
+    const { editor, document } = await createEditorForContent(
+      `class Test {
+        private complexMethodWithParamsAndArgs<T>(t: T) {
+          return t;
+        }
+      }`
+    );
+    editor.selection = new vscode.Selection(1, 20, 1, 20);
+
+    expect(document.getText()).contain(
+      `private complexMethodWithParamsAndArgs<T>(t: T) {`
+    );
+
+    vscode.commands.executeCommand(toArrowSyntaxCommand.name).then(() => {
+      expect(document.getText()).contain(
+        `private complexMethodWithParamsAndArgs = <T>(t: T) => {`
+      );
+    });
   });
 });
-
-const loadEditor = async () => {
-  const uri = vscode.Uri.file(
-    path
-      .join(__dirname + '/../to-arrow-syntax/to-arrow-syntax-example.ts')
-      .replace(/\\out\\/, '\\src\\')
-  );
-  const document = await vscode.workspace.openTextDocument(uri);
-  const editor = await vscode.window.showTextDocument(document);
-  return { document, editor };
-};
