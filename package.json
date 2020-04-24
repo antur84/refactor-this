@@ -2,7 +2,11 @@
   "name": "refactorthis",
   "displayName": "RefactorThis",
   "description": "Common TS refactoring operations",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "publisher": "AndreasTurku",
+  "repository": {
+    "url": "https://github.com/antur84/refactor-this"
+  },
   "engines": {
     "vscode": "^1.41.0"
   },
