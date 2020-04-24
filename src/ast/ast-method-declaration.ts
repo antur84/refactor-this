@@ -7,8 +7,8 @@ import {
 import { Selection } from 'vscode';
 import { ASTNode } from './abstractions/ast-node';
 
-export class ASTMethodDeclaration implements ASTNode {
-  constructor(private astNode: ASTNode, private selection: Selection) {}
+export class ASTMethodDeclaration implements ASTNode<MethodDeclaration> {
+  constructor(private astNode: ASTNode<Node>, private selection: Selection) {}
 
   getNode(): MethodDeclaration {
     const node = this.astNode.getNode();
