@@ -26,8 +26,7 @@
     "vscode:prepublish": "webpack --mode production",
     "compile": "webpack --mode none",
     "watch": "webpack --mode none --watch",
-    "test-compile": "tsc -p ./",
-    "test": "node ./out/test/runTest.js"
+    "test-compile": "tsc -p ./"
   },
   "prettier": {
     "singleQuote": true
