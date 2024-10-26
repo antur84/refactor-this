@@ -7,14 +7,20 @@ export async function tryExecute(
 ): Promise<void> {
     try {
         await action();
-    } catch (err) {
-        if (err.name === 'Canceled') {
+    } catch (err: unknown) {
+        if (hasName(err) && err.name === 'Canceled') {
             return;
         }
 
         const message = `Error performing '${command.title}.`;
         vscode.window.showErrorMessage(message);
         logToOutput(message);
-        logToOutput(err);
+        if (typeof err === 'string') {
+            logToOutput(err);
+        }
     }
 }
+
+const hasName = (obj: any): obj is { name: string } => {
+    return obj && typeof obj.name === 'string';
+};

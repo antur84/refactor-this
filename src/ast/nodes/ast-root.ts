@@ -5,7 +5,7 @@ import { ASTNode } from '../abstractions/ast-node';
 export class ASTRoot implements ASTNode<ts.Node> {
     constructor(private document: vscode.TextDocument) {}
 
-    private _sourceFile: ts.SourceFile;
+    private _sourceFile: ts.SourceFile | undefined;
 
     get sourceFile() {
         if (!this._sourceFile) {

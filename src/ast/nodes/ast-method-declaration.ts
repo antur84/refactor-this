@@ -9,8 +9,11 @@ export class ASTMethodDeclaration implements ASTNode<ts.MethodDeclaration> {
         private selection: vscode.Selection
     ) {}
 
-    getNode(): ts.MethodDeclaration {
+    getNode() {
         const node = this.astNode.getNode();
+        if (!node) {
+            return node;
+        }
         return findMethodDeclarationAtSelection(
             node,
             this.selection,

@@ -5,8 +5,8 @@ export const findAtSelection = <T extends ts.FunctionLikeDeclarationBase>(
     selection: vscode.Selection,
     sourceFile: ts.SourceFile,
     matcher: (node: ts.Node) => node is T
-): T => {
-    if (matcher(node)) {
+): T | undefined => {
+    if (matcher(node) && node.name) {
         var startOfMethodName = sourceFile.getLineAndCharacterOfPosition(
             node.name.getStart(sourceFile)
         );
@@ -24,7 +24,7 @@ export const findAtSelection = <T extends ts.FunctionLikeDeclarationBase>(
     }
 
     const children = node.getChildren(sourceFile) || [];
-    let match: T = null;
+    let match: T | undefined = undefined;
     for (let index = 0; index < children.length; index++) {
         const child = children[index];
         match = findAtSelection(child, selection, sourceFile, matcher);

@@ -15,7 +15,7 @@ async function toArrowSyntax() {
         document,
         selection
     );
-    if (!nodeToRefactor) {
+    if (!nodeToRefactor?.name || !nodeToRefactor?.body) {
         return;
     }
     let propertyArrowFunction: ts.PropertyDeclaration =
@@ -79,7 +79,7 @@ async function toArrowSyntax() {
 
 function createModifierFromNode(
     node: ts.MethodDeclaration | ts.FunctionDeclaration
-): ts.ModifierLike[] {
+) {
     if (ts.isMethodDeclaration(node)) {
         return node.modifiers ? [...node.modifiers] : [];
     }
@@ -96,7 +96,7 @@ function getSourceAndNodeAtSelection(
 } {
     var root = new ASTRoot(document);
     var methodDeclaration = new ASTMethodDeclaration(root, selection);
-    let node: ts.MethodDeclaration | ts.FunctionDeclaration =
+    let node: ts.MethodDeclaration | ts.FunctionDeclaration | undefined =
         methodDeclaration.getNode();
     if (!node) {
         var functionDeclaration = new ASTFunctionDeclaration(root, selection);

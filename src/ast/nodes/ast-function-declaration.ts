@@ -9,8 +9,12 @@ export class ASTFunctionDeclaration implements ASTNode<ts.FunctionDeclaration> {
         private selection: vscode.Selection
     ) {}
 
-    getNode(): ts.FunctionDeclaration {
+    getNode() {
         const node = this.astNode.getNode();
+        if (!node) {
+            return node;
+        }
+
         return findFunctionDeclarationAtSelection(
             node,
             this.selection,
