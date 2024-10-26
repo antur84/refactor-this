@@ -1,9 +1,9 @@
-import { expect, spy, use } from 'chai';
-import * as spies from 'chai-spies';
+import { expect, use } from 'chai';
+import * as spy from 'chai-spies';
 import * as vscode from 'vscode';
 import { toArrowSyntaxCommand } from '../../../../commands/to-arrow-syntax/to-arrow-syntax.command';
 import { createEditorForContent } from '../../../utils/content-creator';
-use(spies);
+use(spy);
 
 describe('to-arrow-syntax Test Suite', () => {
   it('should handle function declaration', async () => {

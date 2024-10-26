@@ -18,18 +18,17 @@ async function toArrowSyntax() {
   if (!nodeToRefactor) {
     return;
   }
-  let propertyArrowFunction: ts.PropertyDeclaration = ts.createProperty(
-    undefined,
+  let propertyArrowFunction: ts.PropertyDeclaration = ts.factory.createPropertyDeclaration(
     createModifierFromNode(nodeToRefactor),
     nodeToRefactor.name,
     undefined,
     nodeToRefactor.type,
-    ts.createArrowFunction(
+    ts.factory.createArrowFunction(
       undefined,
       nodeToRefactor.typeParameters,
       nodeToRefactor.parameters,
       nodeToRefactor.type,
-      ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+      ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
       nodeToRefactor.body
     )
   );
@@ -76,12 +75,12 @@ async function toArrowSyntax() {
 
 function createModifierFromNode(
   node: ts.MethodDeclaration | ts.FunctionDeclaration
-): ts.Modifier[] {
+): ts.ModifierLike[] {
   if (ts.isMethodDeclaration(node)) {
     return node.modifiers ? [...node.modifiers] : [];
   }
 
-  return ts.createModifiersFromModifierFlags(ts.ModifierFlags.Const);
+  return ts.factory.createModifiersFromModifierFlags(ts.ModifierFlags.Const);
 }
 
 function getSourceAndNodeAtSelection(
@@ -118,3 +117,4 @@ const toArrowSyntaxCommand: RefactorCommand = {
 };
 
 export { toArrowSyntaxCommand };
+
