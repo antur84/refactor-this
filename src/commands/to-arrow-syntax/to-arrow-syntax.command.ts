@@ -1,10 +1,10 @@
-import * as ts from 'typescript';
-import * as vscode from 'vscode';
-import { ASTFunctionDeclaration } from '../../ast/nodes/ast-function-declaration';
-import { ASTMethodDeclaration } from '../../ast/nodes/ast-method-declaration';
-import { ASTRoot } from '../../ast/nodes/ast-root';
-import { RefactorCommand } from '../abstractions/refactor.command';
-import { tryExecute } from '../command.utils';
+import * as ts from "typescript";
+import * as vscode from "vscode";
+import { ASTFunctionDeclaration } from "../../ast/nodes/ast-function-declaration";
+import { ASTMethodDeclaration } from "../../ast/nodes/ast-method-declaration";
+import { ASTRoot } from "../../ast/nodes/ast-root";
+import { RefactorCommand } from "../abstractions/refactor.command";
+import { tryExecute } from "../command.utils";
 async function toArrowSyntax() {
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) {
@@ -18,20 +18,21 @@ async function toArrowSyntax() {
   if (!nodeToRefactor) {
     return;
   }
-  let propertyArrowFunction: ts.PropertyDeclaration = ts.factory.createPropertyDeclaration(
-    createModifierFromNode(nodeToRefactor),
-    nodeToRefactor.name,
-    undefined,
-    nodeToRefactor.type,
-    ts.factory.createArrowFunction(
+  let propertyArrowFunction: ts.PropertyDeclaration =
+    ts.factory.createPropertyDeclaration(
+      createModifierFromNode(nodeToRefactor),
+      nodeToRefactor.name,
       undefined,
-      nodeToRefactor.typeParameters,
-      nodeToRefactor.parameters,
       nodeToRefactor.type,
-      ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-      nodeToRefactor.body
-    )
-  );
+      ts.factory.createArrowFunction(
+        undefined,
+        nodeToRefactor.typeParameters,
+        nodeToRefactor.parameters,
+        nodeToRefactor.type,
+        ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+        nodeToRefactor.body
+      )
+    );
   var replaceNodeWithArrowSyntax: ts.TransformerFactory<ts.Node> = (
     context: ts.TransformationContext
   ) => {
@@ -44,7 +45,7 @@ async function toArrowSyntax() {
       }
     }
 
-    return startNode => ts.visitNode(startNode, visit);
+    return (startNode) => ts.visitNode(startNode, visit);
   };
 
   var transformed = ts.transform(source, [replaceNodeWithArrowSyntax]);
@@ -68,7 +69,7 @@ async function toArrowSyntax() {
     new vscode.Position(endOfMethodName.line, endOfMethodName.character)
   );
   edit.set(document.uri, [
-    new vscode.TextEdit(replaceExact, transformedFileContent)
+    new vscode.TextEdit(replaceExact, transformedFileContent),
   ]);
   await vscode.workspace.applyEdit(edit);
 }
@@ -92,9 +93,8 @@ function getSourceAndNodeAtSelection(
 } {
   var root = new ASTRoot(document);
   var methodDeclaration = new ASTMethodDeclaration(root, selection);
-  let node:
-    | ts.MethodDeclaration
-    | ts.FunctionDeclaration = methodDeclaration.getNode();
+  let node: ts.MethodDeclaration | ts.FunctionDeclaration =
+    methodDeclaration.getNode();
   if (!node) {
     var functionDeclaration = new ASTFunctionDeclaration(root, selection);
     node = functionDeclaration.getNode();
@@ -104,7 +104,7 @@ function getSourceAndNodeAtSelection(
 }
 
 const toArrowSyntaxCommand: RefactorCommand = {
-  name: `refactorthis.to-arrow-syntax`,
+  name: `refactor-this.to-arrow-syntax`,
   title: `[RThis] Convert to arrow syntax (=>)`,
   kind: vscode.CodeActionKind.RefactorRewrite,
   command: async () => {
@@ -113,8 +113,7 @@ const toArrowSyntaxCommand: RefactorCommand = {
   canBePerformed: (
     document: vscode.TextDocument,
     selection: vscode.Selection
-  ) => !!getSourceAndNodeAtSelection(document, selection).node
+  ) => !!getSourceAndNodeAtSelection(document, selection).node,
 };
 
 export { toArrowSyntaxCommand };
-

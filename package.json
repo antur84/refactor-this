@@ -1,21 +1,27 @@
 {
   "name": "refactor-this",
-  "displayName": "refactor-this",
+  "displayName": "RefactorThis",
   "description": "",
-  "version": "0.0.1",
+  "publisher": "AndreasTurku",
+  "repository": {
+    "url": "https://github.com/antur84/refactor-this"
+  },
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.94.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:typescript"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "refactor-this.helloWorld",
-        "title": "Hello World"
+        "command": "refactor-this.to-arrow-syntax",
+        "title": "[RThis] Convert to arrow syntax (=>)"
       }
     ]
   },
