@@ -93,7 +93,7 @@ describe('to-arrow-syntax Test Suite', () => {
     });
 
     it('should not crash when executing on invalid selection', async () => {
-        const { editor, document } = await createEditorForContent(
+        const { editor } = await createEditorForContent(
             `class Test {
                 private test: number;
             }`
