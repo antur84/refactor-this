@@ -6,4 +6,5 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Initial release
+-   1.1.1 Fixed Convert to arrow syntax adding explicit types twice.
+-   Initial release
