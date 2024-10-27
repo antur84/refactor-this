@@ -48,6 +48,27 @@ describe('to-arrow-syntax Test Suite', () => {
             });
     });
 
+    it('should handle method with explicit return type', async () => {
+        const { editor, document } = await createEditorForContent(
+            `class Test {
+                methodDeclaration(): Test {
+                    return null;
+                }
+            }`
+        );
+        editor.selection = new vscode.Selection(1, 17, 1, 17);
+
+        expect(document.getText()).contain(`methodDeclaration(): Test {`);
+
+        return vscode.commands
+            .executeCommand(toArrowSyntaxCommand.name)
+            .then(() => {
+                expect(document.getText()).contain(
+                    `methodDeclaration = (): Test => {`
+                );
+            });
+    });
+
     it('should handle advanced method declaration with modifier', async () => {
         const { editor, document } = await createEditorForContent(
             `class Test {
