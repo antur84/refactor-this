@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+-   Remove explicit type
+
+## [1.2.0] - 2024-10-27
+
+### Added
+
+-   Refactor: Remove explicit return type (from functions and methods)
+
 ## [1.1.1] - 2024-10-27
 
 ### Fixed
