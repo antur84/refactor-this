@@ -23,7 +23,7 @@ async function toArrowSyntax() {
             createModifierFromNode(nodeToRefactor),
             nodeToRefactor.name,
             undefined,
-            nodeToRefactor.type,
+            undefined,
             ts.factory.createArrowFunction(
                 undefined,
                 nodeToRefactor.typeParameters,
