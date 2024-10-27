@@ -6,7 +6,7 @@
     "repository": {
         "url": "https://github.com/antur84/refactor-this"
     },
-    "version": "1.1.1",
+    "version": "1.2.0",
     "engines": {
         "vscode": "^1.94.0"
     },
