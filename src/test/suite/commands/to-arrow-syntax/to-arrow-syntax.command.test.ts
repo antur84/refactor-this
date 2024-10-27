@@ -9,9 +9,9 @@ describe('to-arrow-syntax Test Suite', () => {
     it('should handle function declaration', async () => {
         const { editor, document } = await createEditorForContent(
             `function funcDeclaration() {
-        var test = new FuncToArrowExample();
-        test.simpleMethod();
-      }`
+                var test = new FuncToArrowExample();
+                test.simpleMethod();
+            }`
         );
         editor.selection = new vscode.Selection(0, 10, 0, 10);
 
@@ -29,13 +29,13 @@ describe('to-arrow-syntax Test Suite', () => {
     it('should handle method declaration', async () => {
         const { editor, document } = await createEditorForContent(
             `class Test {
-        methodDeclaration() {
-          var test = new FuncToArrowExample();
-          test.simpleMethod();
-        }
-      }`
+                methodDeclaration() {
+                    var test = new FuncToArrowExample();
+                    test.simpleMethod();
+                }
+            }`
         );
-        editor.selection = new vscode.Selection(1, 10, 1, 10);
+        editor.selection = new vscode.Selection(1, 17, 1, 17);
 
         expect(document.getText()).contain(`methodDeclaration() {`);
 
@@ -51,12 +51,12 @@ describe('to-arrow-syntax Test Suite', () => {
     it('should handle advanced method declaration with modifier', async () => {
         const { editor, document } = await createEditorForContent(
             `class Test {
-        private complexMethodWithParamsAndArgs<T>(t: T) {
-          return t;
-        }
-      }`
+                private complexMethodWithParamsAndArgs<T>(t: T) {
+                    return t;
+                }
+            }`
         );
-        editor.selection = new vscode.Selection(1, 20, 1, 20);
+        editor.selection = new vscode.Selection(1, 27, 1, 27);
 
         expect(document.getText()).contain(
             `private complexMethodWithParamsAndArgs<T>(t: T) {`
@@ -74,8 +74,8 @@ describe('to-arrow-syntax Test Suite', () => {
     it('should not crash when executing on invalid selection', async () => {
         const { editor, document } = await createEditorForContent(
             `class Test {
-        private test: number;
-      }`
+                private test: number;
+            }`
         );
         editor.selection = new vscode.Selection(0, 0, 0, 0);
 
