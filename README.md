@@ -16,10 +16,8 @@ See below for a complete listing, expand each one for demo.
 
 ## Known Issues
 
--
+Does not apply any formatting after actions. Use your own formatter for that.
 
 ## Release Notes
 
-### 1.0.0
-
-Initial release. Contains one refactoring, "Convert to arrow syntax (=>)"
+See [CHANGELOG](CHANGELOG.md)

@@ -6,5 +6,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
--   1.1.1 Fixed Convert to arrow syntax adding explicit types twice.
+## [1.1.1] - 2024-10-27
+
+### Fixed
+
+-   Fixed Convert to arrow syntax adding explicit types twice.
+
+## [1.1.0] - 2024-10-26
+
+### Changed
+
+-   Removed extension from old publisher and moved to new publisher.
+
+## [1.0.0] - 2020-04-24
+
+### Added
+
 -   Initial release
+-   Refactor: Convert to arrow syntax
